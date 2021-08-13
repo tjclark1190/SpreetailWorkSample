@@ -53,7 +53,7 @@ namespace SpreetailWorkSample.Services
                     GetKeyValuePairListItemsForDisplay();
                     break;
                 case ApplicationConstants.Commands.Exit:
-//                    OutputBuilder.Append(ApplicationConstants.SuccessMessages.ClosingApplication);
+                  OutputBuilder.Append(ApplicationConstants.SuccessMessages.ClosingApplication);
 
                     break;
                 default:
