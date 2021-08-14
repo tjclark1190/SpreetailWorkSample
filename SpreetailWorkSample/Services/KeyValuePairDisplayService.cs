@@ -14,14 +14,14 @@ namespace SpreetailWorkSample.Services
             switch (command.ToUpper())
             {
                 case ApplicationConstants.Commands.Keys:
-                    return keyValuePairs.GetKeyValuePairListKeysForDisplay();
+                    return Keys(keyValuePairs);//keyValuePairs.GetKeyValuePairListKeysForDisplay();
                 case ApplicationConstants.Commands.Members:
-                    return keyValuePairs.GetKeyValuePairListMembersForDisplay(key);
-                case ApplicationConstants.Commands.Add:                   
-                    return keyValuePairs.AddKeyValuePair(new KeyValuePair<TKey, TMember>(key, member));
+                    return Members(keyValuePairs, key); //keyValuePairs.GetKeyValuePairListMembersForDisplay(key);
+                case ApplicationConstants.Commands.Add:
+                    return Add(keyValuePairs, new KeyValuePair<TKey, TMember> (key, member));
                 case ApplicationConstants.Commands.Remove:
                     //REMOVE foo bar
-                    return keyValuePairs.RemoveKeyValuePairFromList(key, member);
+                    return //keyValuePairs.RemoveKeyValuePairFromList(key, member);
                 case ApplicationConstants.Commands.RemoveAll:
                     //REMOVEALL foo
                     return keyValuePairs.RemoveKeyValuePairsForKeyFromList(key);
@@ -40,7 +40,41 @@ namespace SpreetailWorkSample.Services
                 default:
                     throw new Exception(string.Format(ApplicationConstants.ErrorMessages.InvalidCommand, command));
             }
-        }        
+        }
+
+        private string Keys(List<KeyValuePair<TKey, TMember>> keyValuePairs)
+        {
+            return keyValuePairs.GetKeyValuePairListKeysForDisplay();
+        }
+
+        private string Members(List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key)
+        {
+            return keyValuePairs.GetKeyValuePairListMembersForDisplay(key);
+        }
+
+        private string Add(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toAdd)
+        {
+            if(keyValuePairs.AddKeyValuePair(toAdd))
+                return ApplicationConstants.SuccessMessages.Added;
+
+            return ApplicationConstants.ErrorMessages.AddFailed;
+        }
+
+        private string Remove(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toRemove)
+        {
+            //if (keyValuePairs.AddKeyValuePair(toAdd))
+            //    return ApplicationConstants.SuccessMessages.Added;
+
+            return keyValuePairs.RemoveKeyValuePairFromList(toRemove);
+        }
+
+        private string RemoveAll(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toAdd)
+        {
+            if (keyValuePairs.AddKeyValuePair(toAdd))
+                return ApplicationConstants.SuccessMessages.Added;
+
+            return ApplicationConstants.ErrorMessages.AddFailed;
+        }
     }
 }
 

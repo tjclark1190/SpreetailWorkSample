@@ -8,8 +8,6 @@ namespace SpreetailWorkSample.Extensions
 {
     public static class KeyValuePairExtensions
     {
-        #region Command Methods
-
         //KEYS
         public static string GetKeyValuePairListKeysForDisplay<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValueList)
         {
@@ -84,8 +82,6 @@ namespace SpreetailWorkSample.Extensions
         //MEMBEREXISTS
         public static string KeyValuePairExists<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey,TMember> keyValuePair)
         {
-            //keyValuePairs.FilterKeyValuePairListByKey(key);
-
             if (keyValuePairs.Contains(keyValuePair))
             {
                 return ApplicationConstants.SuccessMessages.True;
@@ -97,7 +93,7 @@ namespace SpreetailWorkSample.Extensions
         }
 
         //ADD
-        public static string AddKeyValuePair<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toAdd)
+        public static bool AddKeyValuePair<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toAdd)
         {
             if (toAdd.Key.CheckNullOrEmpty())
             {
@@ -116,7 +112,7 @@ namespace SpreetailWorkSample.Extensions
 
             keyValuePairs.Add(toAdd);
 
-            return ApplicationConstants.SuccessMessages.Added;
+            return keyValuePairs.Contains(toAdd);            
         }
 
         //ITEMS
@@ -181,11 +177,17 @@ namespace SpreetailWorkSample.Extensions
                 throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, key));
 
             //pass in the list returned for key to remove 
-            keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForKey);
+            keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForKey);           
 
-            return ApplicationConstants.SuccessMessages.Removed;
+            if (keyValuePairs.CheckIfItemsRemoved(keyValuePairsForKey))
+            {
+                return ApplicationConstants.SuccessMessages.Removed;
+            }
+            else
+            {
+                return ApplicationConstants.ErrorMessages.RemoveFailed;
+            }
         }
-        #endregion
 
         public static void RemoveItemsFromKeyValuePairList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, List<KeyValuePair<TKey, TMember>> toRemove)
         {
@@ -195,6 +197,23 @@ namespace SpreetailWorkSample.Extensions
             {
                 keyValuePairs.Remove(toRemove[i]);
             }
+        }
+
+        public static bool CheckIfItemsRemoved<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, List<KeyValuePair<TKey, TMember>> toRemove)
+        {
+            var isRemoved = true;
+
+            foreach (var tr in toRemove)
+            {
+                if (!keyValuePairs.Contains(tr))
+                    continue;
+
+                isRemoved = false;
+
+                break;
+            }
+
+            return isRemoved;
         }
 
         //Use by commands: MEMBERS, KEYEXISTS

@@ -252,6 +252,8 @@ namespace SpreetailWorkSample.Helpers
             public static readonly string EmptySet = "(empty set)";
             public static readonly string BlankOutputString = "Failed to generate output string";
             public static readonly string BlankInputArray = "InputArray does not have any elements";
+            public static readonly string RemoveFailed = "Data was not removed";
+            public static readonly string AddFailed = "Data was not added";
         }
 
         public static class SuccessMessages
