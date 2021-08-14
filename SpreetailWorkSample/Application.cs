@@ -51,7 +51,7 @@ namespace SpreetailWorkSample
                     var key = inputArray.Length > 1 ? inputArray[1] : string.Empty;
                     var member = inputArray.Length > 2 ? inputArray[2] : string.Empty;
 
-                    var output = _keyValuePairService.KeyValuePairCommandOutput(keyValuePairs, command, key, member);
+                    var output = _keyValuePairService.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(key, member), command);
 
                     if (string.IsNullOrWhiteSpace(output))
                         throw new Exception(ApplicationConstants.ErrorMessages.BlankOutputString);

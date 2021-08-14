@@ -9,47 +9,47 @@ namespace SpreetailWorkSample.Services
 {
     public class KeyValuePairDisplayService<TKey, TMember>
     {
-        public string KeyValuePairCommandOutput(List<KeyValuePair<TKey, TMember>> keyValuePairs, string command, TKey key, TMember member)
+        public string KeyValuePairCommandOutput(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePairToProcess, string command)
         {
             switch (command.ToUpper())
             {
                 case ApplicationConstants.Commands.Keys:
-                    return Keys(keyValuePairs);//keyValuePairs.GetKeyValuePairListKeysForDisplay();
+                    return Keys(keyValuePairs);
                 case ApplicationConstants.Commands.Members:
-                    return Members(keyValuePairs, key); //keyValuePairs.GetKeyValuePairListMembersForDisplay(key);
+                    return Members(keyValuePairs, keyValuePairToProcess);
                 case ApplicationConstants.Commands.Add:
-                    return Add(keyValuePairs, new KeyValuePair<TKey, TMember> (key, member));
+                    return Add(keyValuePairs, keyValuePairToProcess);
                 case ApplicationConstants.Commands.Remove:
                     //REMOVE foo bar
-                    return //keyValuePairs.RemoveKeyValuePairFromList(key, member);
+                    return Remove(keyValuePairs, keyValuePairToProcess);
                 case ApplicationConstants.Commands.RemoveAll:
                     //REMOVEALL foo
-                    return keyValuePairs.RemoveKeyValuePairsForKeyFromList(key);
+                    return RemoveAll(keyValuePairs, keyValuePairToProcess);
                 case ApplicationConstants.Commands.Clear:
-                    return keyValuePairs.ClearKeyValuePairList();
+                    return Clear(keyValuePairs);
                 case ApplicationConstants.Commands.KeyExists:
-                    return keyValuePairs.KeyExists(key);
+                    return KeyExists(keyValuePairs, keyValuePairToProcess);
                 case ApplicationConstants.Commands.MemberExists:
-                    return keyValuePairs.KeyValuePairExists(new KeyValuePair<TKey, TMember>(key, member));
+                    return MemberExists(keyValuePairs, keyValuePairToProcess);
                 case ApplicationConstants.Commands.AllMembers:
-                    return keyValuePairs.GetKeyValuePairListMembersForDisplay(key);
+                    return AllMembers(keyValuePairs, keyValuePairToProcess);
                 case ApplicationConstants.Commands.Items:
-                    return keyValuePairs.GetKeyValuePairListItemsForDisplay();
+                    return Items(keyValuePairs);
                 case ApplicationConstants.Commands.Exit:          
                     return ApplicationConstants.SuccessMessages.ClosingApplication;
                 default:
                     throw new Exception(string.Format(ApplicationConstants.ErrorMessages.InvalidCommand, command));
             }
-        }
+        }        
 
         private string Keys(List<KeyValuePair<TKey, TMember>> keyValuePairs)
         {
             return keyValuePairs.GetKeyValuePairListKeysForDisplay();
         }
 
-        private string Members(List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key)
+        private string Members(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair)
         {
-            return keyValuePairs.GetKeyValuePairListMembersForDisplay(key);
+            return keyValuePairs.GetKeyValuePairListMembersForDisplay(keyValuePair.Key);
         }
 
         private string Add(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toAdd)
@@ -62,18 +62,37 @@ namespace SpreetailWorkSample.Services
 
         private string Remove(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toRemove)
         {
-            //if (keyValuePairs.AddKeyValuePair(toAdd))
-            //    return ApplicationConstants.SuccessMessages.Added;
-
             return keyValuePairs.RemoveKeyValuePairFromList(toRemove);
         }
 
-        private string RemoveAll(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toAdd)
+        private string RemoveAll(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toRemove)
         {
-            if (keyValuePairs.AddKeyValuePair(toAdd))
-                return ApplicationConstants.SuccessMessages.Added;
+            return keyValuePairs.RemoveKeyValuePairsForKeyFromList(toRemove.Key);
+        }
 
-            return ApplicationConstants.ErrorMessages.AddFailed;
+        private string Clear(List<KeyValuePair<TKey, TMember>> keyValuePairs)
+        {
+            return keyValuePairs.ClearKeyValuePairList();
+        }
+
+        private string KeyExists(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair)
+        {
+            return keyValuePairs.KeyExists(keyValuePair.Key);
+        }
+        
+        private string MemberExists(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair)
+        {
+            return keyValuePairs.KeyValuePairExists(keyValuePair);
+        }
+
+        private string AllMembers(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair)
+        {
+            return keyValuePairs.GetKeyValuePairListMembersForDisplay(keyValuePair.Key);
+        }
+
+        private string Items(List<KeyValuePair<TKey, TMember>> keyValuePairs)
+        {
+            return keyValuePairs.GetKeyValuePairListItemsForDisplay();
         }
     }
 }

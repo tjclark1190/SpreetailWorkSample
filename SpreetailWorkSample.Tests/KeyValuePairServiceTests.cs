@@ -37,7 +37,7 @@ namespace SpreetailWorkSample.Tests
         {
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
-            var output = _processor.KeyValuePairCommandOutput(keyValuePairs, ApplicationConstants.Commands.Add, "apple", "tree");
+            var output = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>("apple", "tree"), ApplicationConstants.Commands.Add);
 
             Assert.AreNotEqual(0, keyValuePairs.Count);                               
             Assert.AreEqual(ApplicationConstants.SuccessMessages.Added, output);
@@ -48,7 +48,7 @@ namespace SpreetailWorkSample.Tests
         {
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
-            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, ApplicationConstants.Commands.Add, null, "tree"));
+            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(null, "tree"), ApplicationConstants.Commands.Add));
 
             Assert.AreEqual(ApplicationConstants.ErrorMessages.RequiredKey, ex.Message);           
         }
@@ -58,7 +58,7 @@ namespace SpreetailWorkSample.Tests
         {
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
-            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, ApplicationConstants.Commands.Add, string.Empty, "tree"));
+            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(string.Empty, "tree"), ApplicationConstants.Commands.Add));
 
             Assert.AreEqual(ApplicationConstants.ErrorMessages.RequiredKey, ex.Message);
         }
@@ -68,7 +68,7 @@ namespace SpreetailWorkSample.Tests
         {
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
-            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, ApplicationConstants.Commands.Add, "apple", null));
+            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>("apple", null), ApplicationConstants.Commands.Add));
 
             Assert.AreEqual(ApplicationConstants.ErrorMessages.RequiredMember, ex.Message);
         }
@@ -78,7 +78,7 @@ namespace SpreetailWorkSample.Tests
         {
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
-            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, ApplicationConstants.Commands.Add, "apple", string.Empty));
+            var ex = Assert.Throws<Exception>(() => _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>("apple", string.Empty), ApplicationConstants.Commands.Add));
 
             Assert.AreEqual(ApplicationConstants.ErrorMessages.RequiredMember, ex.Message);
         } 
@@ -88,11 +88,11 @@ namespace SpreetailWorkSample.Tests
         {
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
-            var addOutput = _processor.KeyValuePairCommandOutput(keyValuePairs, ApplicationConstants.Commands.Add, "apple", "tree");
+            var addOutput = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>("apple", "tree"), ApplicationConstants.Commands.Add);
 
             Assert.AreEqual(ApplicationConstants.SuccessMessages.Added, addOutput);
 
-            var keysOutput = _processor.KeyValuePairCommandOutput(keyValuePairs, ApplicationConstants.Commands.Keys, null, null);
+            var keysOutput = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(string.Empty, string.Empty), ApplicationConstants.Commands.Keys);
 
             Assert.AreNotEqual(0, keyValuePairs.Count);
             Assert.AreNotEqual(0, keysOutput.Length);            

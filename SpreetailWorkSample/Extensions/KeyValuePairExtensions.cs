@@ -145,41 +145,25 @@ namespace SpreetailWorkSample.Extensions
         }
 
         //REMOVE foo bar
-        public static string RemoveKeyValuePairFromList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key, TMember member)
+        public static string RemoveKeyValuePairFromList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toRemove)
         {
-            if (key.CheckNullOrEmpty())
+            if (toRemove.Key.CheckNullOrEmpty())
                 throw new Exception(ApplicationConstants.ErrorMessages.RequiredKey);
 
             //filter by "key"
-            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(key);
+            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(toRemove.Key);
 
             if (!keyValuePairsForKey.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, key));
+                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, toRemove.Key));
 
             //filter by "member"
-            var keyValuePairsForMember = keyValuePairsForKey.FilterKeyValuePairListByMember(member); //(from kvp in keyValuePairsForKey where kvp.Value.IsEqual(member) select kvp).ToList();
+            var keyValuePairsForMember = keyValuePairsForKey.FilterKeyValuePairListByMember(toRemove.Value); //(from kvp in keyValuePairsForKey where kvp.Value.IsEqual(member) select kvp).ToList();
 
             if (!keyValuePairsForMember.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.MemberDoesNotExist, member));
+                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.MemberDoesNotExist, toRemove.Value));
 
             //pass in the list returned for key and member to remove 
-            keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForMember);
-
-            return ApplicationConstants.SuccessMessages.Removed;
-        }
-
-        //REMOVEALL foo
-        public static string RemoveKeyValuePairsForKeyFromList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key)
-        {
-            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(key);
-
-            if (!keyValuePairsForKey.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, key));
-
-            //pass in the list returned for key to remove 
-            keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForKey);           
-
-            if (keyValuePairs.CheckIfItemsRemoved(keyValuePairsForKey))
+            if (keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForMember))
             {
                 return ApplicationConstants.SuccessMessages.Removed;
             }
@@ -189,7 +173,26 @@ namespace SpreetailWorkSample.Extensions
             }
         }
 
-        public static void RemoveItemsFromKeyValuePairList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, List<KeyValuePair<TKey, TMember>> toRemove)
+        //REMOVEALL foo
+        public static string RemoveKeyValuePairsForKeyFromList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key)
+        {
+            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(key);
+
+            if (!keyValuePairsForKey.Any())
+                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, key));
+            
+            //pass in the list returned for key to remove 
+            if (keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForKey))
+            {
+                return ApplicationConstants.SuccessMessages.Removed;
+            }
+            else
+            {
+                return ApplicationConstants.ErrorMessages.RemoveFailed;
+            }
+        }
+
+        public static bool RemoveItemsFromKeyValuePairList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, List<KeyValuePair<TKey, TMember>> toRemove)
         {
             var toRemoveCount = toRemove.Count;
 
@@ -197,6 +200,9 @@ namespace SpreetailWorkSample.Extensions
             {
                 keyValuePairs.Remove(toRemove[i]);
             }
+
+            //check if the key value pairs were removed
+            return keyValuePairs.CheckIfItemsRemoved(toRemove);
         }
 
         public static bool CheckIfItemsRemoved<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, List<KeyValuePair<TKey, TMember>> toRemove)
