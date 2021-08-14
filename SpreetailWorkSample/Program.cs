@@ -16,6 +16,7 @@ namespace SpreetailWorkSample
         {
             ////setup the static class ConfigurationManager
             //RuntimeHelpers.RunClassConstructor(typeof(ConfigurationManager).TypeHandle);
+            Console.WriteLine("Initializing...");
 
             //this will invoke the static constructor in the static class ServiceProviderFactory
             //IServiceCollection will be instantiated

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SpreetailWorkSample
+namespace SpreetailWorkSample.Extensions
 {
-    public static class Extensions
+    public static class HelperExtensions
     {
         public static T ToLowerForStringValue<T>(this T value)
         {

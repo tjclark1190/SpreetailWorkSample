@@ -242,6 +242,7 @@ namespace SpreetailWorkSample.Helpers
 
         public static class ErrorMessages
         {
+            public static readonly string RequiredCommand = "Command is required";
             public static readonly string RequiredKey = "Key is required";
             public static readonly string RequiredMember = "Member is required";
             public static readonly string KeyDoesNotExist = "key \"{0}\" does not exist";
@@ -249,6 +250,8 @@ namespace SpreetailWorkSample.Helpers
             public static readonly string KeyMemberPairExists = "Member \"{0}\" already exists for key \"{1}\"";
             public static readonly string InvalidCommand = "\"{0}\" is not a command";
             public static readonly string EmptySet = "(empty set)";
+            public static readonly string BlankOutputString = "Failed to generate output string";
+            public static readonly string BlankInputArray = "InputArray does not have any elements";
         }
 
         public static class SuccessMessages
@@ -257,6 +260,8 @@ namespace SpreetailWorkSample.Helpers
             public static readonly string Removed = "Removed";
             public static readonly string Cleared = "Cleared";
             public static readonly string ClosingApplication = "Closing Application";
+            public static readonly string True = "true";
+            public static readonly string False = "false";
         }
     }
 }

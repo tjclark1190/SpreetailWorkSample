@@ -24,7 +24,7 @@ namespace SpreetailWorkSample.Configuration
             services.AddSingleton<Application>();
 
             //add processor
-            services.AddSingleton<KeyValuePairService<string, string>>();            
+            services.AddSingleton<KeyValuePairDisplayService<string, string>>();            
         }
     }
 }
