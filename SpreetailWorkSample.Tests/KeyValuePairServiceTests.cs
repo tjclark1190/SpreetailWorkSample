@@ -16,7 +16,7 @@ namespace SpreetailWorkSample.Tests
     {
         //private KeyValuePairProcessorMock _processorMock;
         private readonly IServiceProvider _serviceProvider;
-        private readonly KeyValuePairDisplayService<string, string> _processor;
+        private readonly KeyValuePairService<string, string> _processor;
           
         [SetUp]
         public void Setup()
@@ -28,7 +28,7 @@ namespace SpreetailWorkSample.Tests
         {
             _serviceProvider = ServiceProviderFactory.ServiceProvider;
 
-            _processor = _serviceProvider.GetService<KeyValuePairDisplayService<string, string>>();
+            _processor = _serviceProvider.GetService<KeyValuePairService<string, string>>();
         }
        
 
@@ -84,18 +84,35 @@ namespace SpreetailWorkSample.Tests
         } 
         
         [Test]
-        public void GetKeysForDisplayResultReturnedSuccess()
+        public void KeysWithAddedListSuccess()
         {
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
-            var addOutput = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>("apple", "tree"), ApplicationConstants.Commands.Add);
+            var addOutput1 = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>("foo", "bar"), ApplicationConstants.Commands.Add);
 
-            Assert.AreEqual(ApplicationConstants.SuccessMessages.Added, addOutput);
+            Assert.AreEqual(ApplicationConstants.SuccessMessages.Added, addOutput1);
+
+            var addOutput2 = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>("bang", "bar"), ApplicationConstants.Commands.Add);
+
+            Assert.AreEqual(ApplicationConstants.SuccessMessages.Added, addOutput2);
+
+            var keysOutput = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(string.Empty, string.Empty), ApplicationConstants.Commands.Keys);
+
+            keysOutput = keysOutput.Replace(Environment.NewLine, " ").Trim();
+
+            Assert.AreNotEqual(0, keyValuePairs.Count);
+            Assert.AreEqual("1) foo 2) bang", keysOutput);            
+        }
+
+        [Test]
+        public void KeysWithEmptyListSuccess()
+        {
+            var keyValuePairs = new List<KeyValuePair<string, string>>();
 
             var keysOutput = _processor.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(string.Empty, string.Empty), ApplicationConstants.Commands.Keys);
 
             Assert.AreNotEqual(0, keyValuePairs.Count);
-            Assert.AreNotEqual(0, keysOutput.Length);            
-        }      
+            Assert.AreEqual(0, keysOutput);
+        }
     }
 }

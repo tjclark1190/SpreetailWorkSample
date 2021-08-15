@@ -12,9 +12,9 @@ namespace SpreetailWorkSample
     public class Application
     {
         private readonly IServiceProvider _serviceProvider;
-        private readonly KeyValuePairDisplayService<string, string> _keyValuePairService;
+        private readonly KeyValuePairService<string, string> _keyValuePairService;
 
-        public Application(KeyValuePairDisplayService<string, string> keyValuePairService)
+        public Application(KeyValuePairService<string, string> keyValuePairService)
         {
             _serviceProvider = ServiceProviderFactory.ServiceProvider;
             _keyValuePairService = keyValuePairService;
@@ -25,6 +25,8 @@ namespace SpreetailWorkSample
             Console.Clear();
 
             var input = string.Empty;
+
+            //declare memory based "dictionary" 
             var keyValuePairs = new List<KeyValuePair<string, string>>();
 
             while (!input.Equals(ApplicationConstants.Commands.Exit, StringComparison.InvariantCultureIgnoreCase))
@@ -43,7 +45,7 @@ namespace SpreetailWorkSample
                     if (inputArray == null || !inputArray.Any())
                         throw new Exception(ApplicationConstants.ErrorMessages.BlankInputArray);
 
-                    var command = inputArray[0];
+                    var command = inputArray[0]?.ToUpper();
 
                     if (string.IsNullOrWhiteSpace(command))
                         throw new Exception(ApplicationConstants.ErrorMessages.RequiredCommand);

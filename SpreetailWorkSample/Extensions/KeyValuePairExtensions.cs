@@ -8,91 +8,6 @@ namespace SpreetailWorkSample.Extensions
 {
     public static class KeyValuePairExtensions
     {
-        //KEYS
-        public static string GetKeyValuePairListKeysForDisplay<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValueList)
-        {
-            if (keyValueList == null || !keyValueList.Any())
-            {
-                return ApplicationConstants.ErrorMessages.EmptySet;
-            }
-
-            var keys = (from kvp in keyValueList select kvp.Key).Distinct().ToList();
-
-            var displayBuilder = new StringBuilder();
-
-            var listNumber = 0;
-
-            foreach (var key in keys)
-            {
-                listNumber++;
-
-                displayBuilder.AppendLine($"{listNumber}) {key}");
-            }
-
-            return displayBuilder.ToString();
-        }
-
-        //KEYEXISTS
-        public static string KeyExists<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key)
-        {
-            //keyValuePairs.FilterKeyValuePairListByKey(key);
-
-            if (keyValuePairs.FilterKeyValuePairListByKey(key).Any())
-            {
-                return "true";
-            }
-            else
-            {
-                return "false";
-            }
-        }
-
-        //MEMBERS
-        public static string GetKeyValuePairListMembersForDisplay<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key)
-        {
-            //if key is not null then check it exists in KeyValuePairList
-            if (!key.CheckNullOrEmpty())
-            {
-                keyValuePairs = keyValuePairs.FilterKeyValuePairListByKey(key);
-
-                if (!keyValuePairs.Any())
-                    throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, key));
-            }           
-
-            if (keyValuePairs == null || !keyValuePairs.Any())
-            {
-                return ApplicationConstants.ErrorMessages.EmptySet;
-            }
-
-            var members = from kvp in keyValuePairs select kvp.Value;
-
-            var displayBuilder = new StringBuilder();
-
-            var listNumber = 0;
-            foreach (var member in members)
-            {
-                listNumber++;
-
-                displayBuilder.AppendLine($"{listNumber}) {member}");
-            }
-
-            return displayBuilder.ToString();
-        }
-
-        //MEMBEREXISTS
-        public static string KeyValuePairExists<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey,TMember> keyValuePair)
-        {
-            if (keyValuePairs.Contains(keyValuePair))
-            {
-                return ApplicationConstants.SuccessMessages.True;
-            }
-            else
-            {
-                return ApplicationConstants.SuccessMessages.False;
-            }
-        }
-
-        //ADD
         public static bool AddKeyValuePair<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toAdd)
         {
             if (toAdd.Key.CheckNullOrEmpty())
@@ -104,7 +19,7 @@ namespace SpreetailWorkSample.Extensions
             {
                 throw new Exception(ApplicationConstants.ErrorMessages.RequiredMember);
             }
-            
+
             if (keyValuePairs.Contains(toAdd))
             {
                 throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyMemberPairExists, toAdd.Value, toAdd.Key));
@@ -112,84 +27,7 @@ namespace SpreetailWorkSample.Extensions
 
             keyValuePairs.Add(toAdd);
 
-            return keyValuePairs.Contains(toAdd);            
-        }
-
-        //ITEMS
-        public static string GetKeyValuePairListItemsForDisplay<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs)
-        {
-            if (keyValuePairs == null || !keyValuePairs.Any())
-            {
-                return ApplicationConstants.ErrorMessages.EmptySet;
-            }
-
-            var displayBuilder = new StringBuilder();
-
-            var listNumber = 0;
-            foreach (var kvp in keyValuePairs)
-            {
-                listNumber++;
-
-                displayBuilder.AppendLine($"{listNumber}) {kvp.Key}: {kvp.Value}");
-            }
-
-            return displayBuilder.ToString();
-        }
-
-        //CLEAR
-        public static string ClearKeyValuePairList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs)
-        {
-            keyValuePairs.Clear();
-
-            return ApplicationConstants.SuccessMessages.Cleared;
-        }
-
-        //REMOVE foo bar
-        public static string RemoveKeyValuePairFromList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toRemove)
-        {
-            if (toRemove.Key.CheckNullOrEmpty())
-                throw new Exception(ApplicationConstants.ErrorMessages.RequiredKey);
-
-            //filter by "key"
-            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(toRemove.Key);
-
-            if (!keyValuePairsForKey.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, toRemove.Key));
-
-            //filter by "member"
-            var keyValuePairsForMember = keyValuePairsForKey.FilterKeyValuePairListByMember(toRemove.Value); //(from kvp in keyValuePairsForKey where kvp.Value.IsEqual(member) select kvp).ToList();
-
-            if (!keyValuePairsForMember.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.MemberDoesNotExist, toRemove.Value));
-
-            //pass in the list returned for key and member to remove 
-            if (keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForMember))
-            {
-                return ApplicationConstants.SuccessMessages.Removed;
-            }
-            else
-            {
-                return ApplicationConstants.ErrorMessages.RemoveFailed;
-            }
-        }
-
-        //REMOVEALL foo
-        public static string RemoveKeyValuePairsForKeyFromList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, TKey key)
-        {
-            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(key);
-
-            if (!keyValuePairsForKey.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, key));
-            
-            //pass in the list returned for key to remove 
-            if (keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForKey))
-            {
-                return ApplicationConstants.SuccessMessages.Removed;
-            }
-            else
-            {
-                return ApplicationConstants.ErrorMessages.RemoveFailed;
-            }
+            return keyValuePairs.Contains(toAdd);
         }
 
         public static bool RemoveItemsFromKeyValuePairList<TKey, TMember>(this List<KeyValuePair<TKey, TMember>> keyValuePairs, List<KeyValuePair<TKey, TMember>> toRemove)
