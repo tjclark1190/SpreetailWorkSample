@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.Serialization;
 using System.Text;
 
 namespace SpreetailWorkSample.Helpers
@@ -254,6 +255,7 @@ namespace SpreetailWorkSample.Helpers
             public static readonly string BlankInputArray = "InputArray does not have any elements";
             public static readonly string RemoveFailed = "Data was not removed";
             public static readonly string AddFailed = "Data was not added";
+            public static readonly string UserInputRequired  = "User input is required";            
         }
 
         public static class SuccessMessages

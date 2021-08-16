@@ -37,7 +37,7 @@ namespace SpreetailWorkSample
                     input = Console.ReadLine();
 
                     if (string.IsNullOrWhiteSpace(input))
-                        continue;
+                        throw new Exception(ApplicationConstants.ErrorMessages.UserInputRequired);
 
                     var output = ProcessUserInput(keyValuePairs, input);
 

@@ -7,6 +7,5 @@ namespace SpreetailWorkSample.Helpers
         #region AppSettings                
         public static string InputDelimiter => ConfigurationManager.GetValue<string>("InputDelimiter", "AppSettings");     
         #endregion        
-
     }
 }
