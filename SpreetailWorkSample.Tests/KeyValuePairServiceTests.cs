@@ -17,20 +17,13 @@ namespace SpreetailWorkSample.Tests
         //private KeyValuePairProcessorMock _processorMock;
         private readonly IServiceProvider _serviceProvider;
         private readonly KeyValuePairService<string, string> _processor;
-          
-        [SetUp]
-        public void Setup()
-        {
-            //_processorMock = new KeyValuePairProcessorMock();
-        }
-
+         
         public KeyValuePairServiceTests()
         {
             _serviceProvider = ServiceProviderFactory.ServiceProvider;
 
             _processor = _serviceProvider.GetService<KeyValuePairService<string, string>>();
-        }
-       
+        }       
 
         [Test]
         public void AddCommandTestSuccess()

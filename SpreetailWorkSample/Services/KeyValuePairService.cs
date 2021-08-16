@@ -191,21 +191,3 @@ namespace SpreetailWorkSample.Services
         }
     }
 }
-
-namespace SpreetailWorkSample.Services.Mocks
-{
-    public class KeyValuePairServiceMock
-    {
-        private readonly KeyValuePairService<string, string> _target;
-
-        public KeyValuePairServiceMock()
-        {
-            _target = new KeyValuePairService<string, string>();
-        }
-
-        //public void Keys(List<KeyValuePair<string, string>> keyValuePairs)
-        //{
-        //    _target.Keys(keyValuePairs);
-        //}
-    }
-}

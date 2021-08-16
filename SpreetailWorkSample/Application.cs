@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace SpreetailWorkSample
 {
@@ -39,21 +40,7 @@ namespace SpreetailWorkSample
                     if (string.IsNullOrWhiteSpace(input))
                         continue;
 
-                    //Input is delimited by a single space. It is used in this order command, key, value.
-                    var inputArray = input.Split(ConfigurationHelper.InputDelimiter);
-
-                    if (inputArray == null || !inputArray.Any())
-                        throw new Exception(ApplicationConstants.ErrorMessages.BlankInputArray);
-
-                    var command = inputArray[0]?.ToUpper();
-
-                    if (string.IsNullOrWhiteSpace(command))
-                        throw new Exception(ApplicationConstants.ErrorMessages.RequiredCommand);
-
-                    var key = inputArray.Length > 1 ? inputArray[1] : string.Empty;
-                    var member = inputArray.Length > 2 ? inputArray[2] : string.Empty;
-
-                    var output = _keyValuePairService.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(key, member), command);
+                    var output = ProcessUserInput(keyValuePairs, input);
 
                     if (string.IsNullOrWhiteSpace(output))
                         throw new Exception(ApplicationConstants.ErrorMessages.BlankOutputString);
@@ -68,5 +55,46 @@ namespace SpreetailWorkSample
                 Console.WriteLine();
             }
         } 
+
+        public string ProcessUserInput(List<KeyValuePair<string, string>> keyValuePairs, string input)
+        {
+            //Input is delimited by a single space. It is used in this order command, key, value.
+            var inputArray = input.Split(ConfigurationHelper.InputDelimiter);
+
+            if (inputArray == null || !inputArray.Any())
+                throw new Exception(ApplicationConstants.ErrorMessages.BlankInputArray);
+
+            var command = inputArray[0]?.ToUpper();
+
+            if (string.IsNullOrWhiteSpace(command))
+                throw new Exception(ApplicationConstants.ErrorMessages.RequiredCommand);
+
+            var key = inputArray.Length > 1 ? inputArray[1] : string.Empty;
+            var member = inputArray.Length > 2 ? inputArray[2] : string.Empty;
+
+            return _keyValuePairService.KeyValuePairCommandOutput(keyValuePairs, new KeyValuePair<string, string>(key, member), command);
+        }
+    }
+}
+
+namespace SpreetailWorkSample.Services.Mocks
+{    
+    public class ApplicationMock
+    {
+        private readonly IServiceProvider _serviceProvider;
+        private readonly Application _target;
+
+        public ApplicationMock()
+        {
+            _serviceProvider = ServiceProviderFactory.ServiceProvider;
+            var keyValuePairService = _serviceProvider.GetService<KeyValuePairService<string, string>>();
+
+            _target = new Application(keyValuePairService);
+        }
+
+        public string ProcessUserInput(List<KeyValuePair<string, string>> keyValuePairs, string input)
+        {
+            return _target.ProcessUserInput(keyValuePairs, input);
+        }
     }
 }
