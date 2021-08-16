@@ -7,17 +7,16 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using SpreetailWorkSample.Services.Interfaces;
 
 namespace SpreetailWorkSample
 {
     public class Application
     {
-        private readonly IServiceProvider _serviceProvider;
-        private readonly KeyValuePairService<string, string> _keyValuePairService;
+        private readonly IKeyValuePairService<string, string> _keyValuePairService;
 
-        public Application(KeyValuePairService<string, string> keyValuePairService)
-        {
-            _serviceProvider = ServiceProviderFactory.ServiceProvider;
+        public Application(IKeyValuePairService<string, string> keyValuePairService)
+        {            
             _keyValuePairService = keyValuePairService;
         }
 
@@ -81,13 +80,13 @@ namespace SpreetailWorkSample.Services.Mocks
 {    
     public class ApplicationMock
     {
-        private readonly IServiceProvider _serviceProvider;
         private readonly Application _target;
 
         public ApplicationMock()
         {
-            _serviceProvider = ServiceProviderFactory.ServiceProvider;
-            var keyValuePairService = _serviceProvider.GetService<KeyValuePairService<string, string>>();
+            var serviceProvider = ServiceProviderFactory.ServiceProvider;
+
+            var keyValuePairService = serviceProvider.GetService<IKeyValuePairService<string, string>>();
 
             _target = new Application(keyValuePairService);
         }

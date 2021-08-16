@@ -14,7 +14,6 @@ namespace SpreetailWorkSample.Tests
     [TestFixture]
     public class KeyValuePairServiceTests
     {
-        //private KeyValuePairProcessorMock _processorMock;
         private readonly IServiceProvider _serviceProvider;
         private readonly KeyValuePairService<string, string> _processor;
          

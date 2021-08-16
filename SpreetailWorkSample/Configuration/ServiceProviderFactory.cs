@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using SpreetailWorkSample.Services;
+using SpreetailWorkSample.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -24,7 +25,7 @@ namespace SpreetailWorkSample.Configuration
             services.AddSingleton<Application>();
 
             //add processor
-            services.AddSingleton<KeyValuePairService<string, string>>();            
+            services.AddSingleton<IKeyValuePairService<string, string>, KeyValuePairService<string, string>>();            
         }
     }
 }

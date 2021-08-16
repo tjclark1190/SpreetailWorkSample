@@ -4,10 +4,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using SpreetailWorkSample.Services.Interfaces;
 
 namespace SpreetailWorkSample.Services
 {
-    public class KeyValuePairService<TKey, TMember>
+    public class KeyValuePairService<TKey, TMember>: IKeyValuePairService<TKey, TMember>
     {
         public string KeyValuePairCommandOutput(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePairToProcess, string command)
         {
@@ -32,9 +33,7 @@ namespace SpreetailWorkSample.Services
         private string Keys(List<KeyValuePair<TKey, TMember>> keyValueList)
         {
             if (keyValueList == null || !keyValueList.Any())
-            {
                 return ApplicationConstants.ErrorMessages.EmptySet;
-            }
 
             var keys = (from kvp in keyValueList select kvp.Key).Distinct().ToList();
 
@@ -55,8 +54,6 @@ namespace SpreetailWorkSample.Services
         //KEYEXISTS
         private string KeyExists(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair)
         {
-            //keyValuePairs.FilterKeyValuePairListByKey(key);
-
             if (keyValuePairs.FilterKeyValuePairListByKey(keyValuePair.Key).Any())
             {
                 return "true";
@@ -72,6 +69,7 @@ namespace SpreetailWorkSample.Services
         {
             //Members: filterByKey = true
             //AllMembers: filterByKey = false
+
             //if filterByKey is true then check key value is set then filter list by key
             if (filterByKey)
             {
@@ -85,9 +83,7 @@ namespace SpreetailWorkSample.Services
             }
 
             if (keyValuePairs == null || !keyValuePairs.Any())
-            {
                 return ApplicationConstants.ErrorMessages.EmptySet;
-            }
 
             var members = from kvp in keyValuePairs select kvp.Value;
 
@@ -130,9 +126,7 @@ namespace SpreetailWorkSample.Services
         private string Items(List<KeyValuePair<TKey, TMember>> keyValuePairs)
         {
             if (keyValuePairs == null || !keyValuePairs.Any())
-            {
                 return ApplicationConstants.ErrorMessages.EmptySet;
-            }
 
             var displayBuilder = new StringBuilder();
 
