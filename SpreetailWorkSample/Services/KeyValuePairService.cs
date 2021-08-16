@@ -14,10 +14,10 @@ namespace SpreetailWorkSample.Services
             return command switch
             {
                 ApplicationConstants.Commands.Keys => Keys(keyValuePairs),
-                ApplicationConstants.Commands.Members => Members(keyValuePairs, keyValuePairToProcess),
+                ApplicationConstants.Commands.Members => Members(keyValuePairs, keyValuePairToProcess, filterByKey: true),
                 ApplicationConstants.Commands.Add => Add(keyValuePairs, keyValuePairToProcess),
-                ApplicationConstants.Commands.Remove => Remove(keyValuePairs, keyValuePairToProcess),//REMOVE foo bar
-                ApplicationConstants.Commands.RemoveAll => RemoveAll(keyValuePairs, keyValuePairToProcess),//REMOVEALL foo
+                ApplicationConstants.Commands.Remove => Remove(keyValuePairs, keyValuePairToProcess, filterByMember: true),//REMOVE foo bar
+                ApplicationConstants.Commands.RemoveAll => Remove(keyValuePairs, keyValuePairToProcess),//REMOVEALL foo
                 ApplicationConstants.Commands.Clear => Clear(keyValuePairs),
                 ApplicationConstants.Commands.KeyExists => KeyExists(keyValuePairs, keyValuePairToProcess),
                 ApplicationConstants.Commands.MemberExists => MemberExists(keyValuePairs, keyValuePairToProcess),
@@ -68,11 +68,16 @@ namespace SpreetailWorkSample.Services
         }
 
         //MEMBERS
-        private string Members(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair)
+        private string Members(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair, bool filterByKey = false)
         {
-            //if key is not null then check it exists in KeyValuePairList
-            if (!keyValuePair.Key.CheckNullOrEmpty())
+            //Members: filterByKey = true
+            //AllMembers: filterByKey = false
+            //if filterByKey is true then check key value is set then filter list by key
+            if (filterByKey)
             {
+                if (keyValuePair.Key.CheckNullOrEmpty())
+                    throw new Exception(string.Format(ApplicationConstants.ErrorMessages.RequiredKey, keyValuePair.Key));
+
                 keyValuePairs = keyValuePairs.FilterKeyValuePairListByKey(keyValuePair.Key);
 
                 if (!keyValuePairs.Any())
@@ -151,44 +156,31 @@ namespace SpreetailWorkSample.Services
         }
 
         //REMOVE foo bar
-        private string Remove(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toRemove)
+        private string Remove(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> toRemove, bool filterByMember = false)
         {
             if (toRemove.Key.CheckNullOrEmpty())
                 throw new Exception(ApplicationConstants.ErrorMessages.RequiredKey);
 
             //filter by "key"
-            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(toRemove.Key);
+            var filteredKeyValuePairs = keyValuePairs.FilterKeyValuePairListByKey(toRemove.Key);
 
-            if (!keyValuePairsForKey.Any())
+            if (!filteredKeyValuePairs.Any())
                 throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, toRemove.Key));
 
             //filter by "member"
-            var keyValuePairsForMember = keyValuePairsForKey.FilterKeyValuePairListByMember(toRemove.Value); //(from kvp in keyValuePairsForKey where kvp.Value.IsEqual(member) select kvp).ToList();
+            if (filterByMember)
+            {
+                if (toRemove.Value.CheckNullOrEmpty())
+                    throw new Exception(ApplicationConstants.ErrorMessages.RequiredMember);
 
-            if (!keyValuePairsForMember.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.MemberDoesNotExist, toRemove.Value));
+                filteredKeyValuePairs = filteredKeyValuePairs.FilterKeyValuePairListByMember(toRemove.Value);
+
+                if (!filteredKeyValuePairs.Any())
+                    throw new Exception(string.Format(ApplicationConstants.ErrorMessages.MemberDoesNotExist, toRemove.Value));
+            }
 
             //pass in the list returned for key and member to remove 
-            if (keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForMember))
-            {
-                return ApplicationConstants.SuccessMessages.Removed;
-            }
-            else
-            {
-                return ApplicationConstants.ErrorMessages.RemoveFailed;
-            }
-        }
-
-        //REMOVEALL foo
-        private string RemoveAll(List<KeyValuePair<TKey, TMember>> keyValuePairs, KeyValuePair<TKey, TMember> keyValuePair)
-        {
-            var keyValuePairsForKey = keyValuePairs.FilterKeyValuePairListByKey(keyValuePair.Key);
-
-            if (!keyValuePairsForKey.Any())
-                throw new Exception(string.Format(ApplicationConstants.ErrorMessages.KeyDoesNotExist, keyValuePair.Key));
-
-            //pass in the list returned for key to remove 
-            if (keyValuePairs.RemoveItemsFromKeyValuePairList(keyValuePairsForKey))
+            if (keyValuePairs.RemoveItemsFromKeyValuePairList(filteredKeyValuePairs))
             {
                 return ApplicationConstants.SuccessMessages.Removed;
             }
